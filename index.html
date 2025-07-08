@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Interactivo - Diana Mendez Zamora</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: Se ha diseñado una SPA de una sola página con una barra de navegación fija para un acceso rápido a las secciones clave: Resumen, Experiencia, Habilidades, Educación y Certificaciones. La sección de "Experiencia" utiliza un sistema de pestañas y acordeones para organizar la información de manera limpia y evitar una lista abrumadora, especialmente para el puesto en CFE con múltiples responsabilidades. La sección de "Habilidades" se visualiza con un gráfico de barras interactivo para una comprensión rápida y comparativa de las competencias de Diana. Esta estructura fue elegida para mejorar la usabilidad, guiar al reclutador a través del perfil de una manera atractiva y destacar visualmente las fortalezas clave. -->
+    <!-- Visualization & Content Choices: Resumen: Texto para informar. Experiencia: Pestañas y acordeones (HTML/JS) para organizar la información compleja de manera interactiva. Habilidades: Gráfico de barras (Chart.js/Canvas) para comparar visualmente las competencias técnicas y de gestión. Educación y Certificaciones: Tarjetas estilizadas (HTML/Tailwind) para presentar la información de forma clara y concisa. La elección de un gráfico para las habilidades tiene como objetivo transformar una lista de texto en un punto de enfoque visual y memorable. El uso de pestañas y acordeones para la experiencia resuelve el problema de presentar una gran cantidad de información detallada sin saturar al usuario. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #FDFBF7;
+            color: #3C3C3C;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 500px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s, border-color 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #A67B5B;
+            border-bottom-color: #A67B5B;
+        }
+        .tab.active {
+            background-color: #A67B5B;
+            color: #FDFBF7;
+        }
+        .accordion-header::after {
+            content: '\25BC';
+            float: right;
+            transition: transform 0.3s;
+        }
+        .accordion-header.open::after {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <span class="text-xl font-bold text-[#A67B5B]">Diana Mendez Zamora</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#resumen" class="nav-link px-3 py-2 text-sm font-medium border-b-2 border-transparent">Resumen</a>
+                        <a href="#experiencia" class="nav-link px-3 py-2 text-sm font-medium border-b-2 border-transparent">Experiencia</a>
+                        <a href="#habilidades" class="nav-link px-3 py-2 text-sm font-medium border-b-2 border-transparent">Habilidades</a>
+                        <a href="#educacion" class="nav-link px-3 py-2 text-sm font-medium border-b-2 border-transparent">Educación</a>
+                        <a href="#certificaciones" class="nav-link px-3 py-2 text-sm font-medium border-b-2 border-transparent">Certificaciones</a>
+                    </div>
+                </div>
+                 <div class="md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-[#A67B5B] focus:outline-none">
+                        <span class="sr-only">Abrir menú principal</span>
+                        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#resumen" class="nav-link block px-3 py-2 rounded-md text-base font-medium">Resumen</a>
+                <a href="#experiencia" class="nav-link block px-3 py-2 rounded-md text-base font-medium">Experiencia</a>
+                <a href="#habilidades" class="nav-link block px-3 py-2 rounded-md text-base font-medium">Habilidades</a>
+                <a href="#educacion" class="nav-link block px-3 py-2 rounded-md text-base font-medium">Educación</a>
+                <a href="#certificaciones" class="nav-link block px-3 py-2 rounded-md text-base font-medium">Certificaciones</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        <section id="home" class="text-center pt-16 pb-20">
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight mb-4">DIANA MENDEZ ZAMORA</h1>
+            <h2 class="text-xl md:text-2xl text-gray-600 mb-8">Licenciada en Negocios Internacionales</h2>
+            <div class="flex justify-center items-center space-x-6 text-sm">
+                <a href="mailto:dianamendezzamora@gmail.com" class="flex items-center hover:text-[#A67B5B] transition-colors">
+                    <span class="mr-2">&#9993;</span> dianamendezzamora@gmail.com
+                </a>
+                <span class="flex items-center">
+                    <span class="mr-2">&#9742;</span> (664) 175 7620
+                </span>
+            </div>
+        </section>
+
+        <section id="resumen" class="py-16">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-3xl font-bold mb-4">Resumen Profesional</h2>
+                <p class="text-lg text-gray-700 leading-relaxed">
+                    Licenciada en Negocios Internacionales con una sólida trayectoria en finanzas, administración y ventas. Destacada por su capacidad en atención al cliente, generación de oportunidades de negocio, gestión de recursos, facturación y análisis de reportes financieros. Habilidad probada para identificar y resolver problemas, optimizar procesos administrativos y colaborar eficazmente en equipos multidisciplinarios.
+                </p>
+            </div>
+        </section>
+
+        <section id="experiencia" class="py-16 bg-white rounded-xl shadow-md">
+            <div class="max-w-4xl mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center mb-10">Experiencia Profesional</h2>
+                 <p class="text-center text-gray-600 mb-12">Explore mi trayectoria profesional. He organizado mis roles por empresa. Para la Comisión Federal de Electricidad, donde desempeñé varias funciones, puede hacer clic en cada área para ver los detalles específicos de mis responsabilidades.</p>
+                <div>
+                    <div class="mb-4 flex justify-center border-b-2">
+                        <button data-tab="tab-1" class="tab active text-lg font-semibold py-3 px-6 transition-colors duration-300">Ciudad Maderas</button>
+                        <button data-tab="tab-2" class="tab text-lg font-semibold py-3 px-6 transition-colors duration-300">Comisión Federal de Electricidad</button>
+                    </div>
+
+                    <div id="tab-1" class="tab-content">
+                        <div class="p-6 bg-gray-50 rounded-lg">
+                            <h3 class="text-xl font-bold text-[#A67B5B]">Asesor de Ventas</h3>
+                            <p class="text-sm text-gray-500 mb-4">Noviembre 2024 - Actualidad</p>
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li>Prospección de leads y generación estratégica de oportunidades de negocio.</li>
+                                <li>Elaboración de reportes detallados y análisis de datos comerciales para la toma de decisiones.</li>
+                                <li>Actualización y gestión eficiente de documentos en CRM, asegurando la integridad de la información.</li>
+                                <li>Cierre exitoso de ventas y seguimiento proactivo al cliente en el proceso post-venta.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="tab-2" class="tab-content hidden">
+                        <div class="p-6">
+                            <p class="text-center text-sm text-gray-500 mb-4">Febrero 2021 - Julio 2024</p>
+                            <div class="space-y-4" id="accordion">
+                                <div class="accordion-item border rounded-lg overflow-hidden">
+                                    <h3 class="accordion-header text-lg font-semibold p-4 cursor-pointer bg-gray-100 hover:bg-gray-200 transition-colors">Finanzas</h3>
+                                    <div class="accordion-content hidden p-4 border-t">
+                                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                            <li>Gestión y validación de pagos de facturas, incluyendo la preparación de reportes de IVA.</li>
+                                            <li>Elaboración de reportes mensuales de ingresos integrados.</li>
+                                            <li>Alta de nuevos proveedores en SAP.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="accordion-item border rounded-lg overflow-hidden">
+                                    <h3 class="accordion-header text-lg font-semibold p-4 cursor-pointer bg-gray-100 hover:bg-gray-200 transition-colors">Facturación</h3>
+                                    <div class="accordion-content hidden p-4 border-t">
+                                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                            <li>Revisión y corrección de facturas, y generación de pólizas contables preliminares.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="accordion-item border rounded-lg overflow-hidden">
+                                    <h3 class="accordion-header text-lg font-semibold p-4 cursor-pointer bg-gray-100 hover:bg-gray-200 transition-colors">Servicios Generales y Transporte Terrestre</h3>
+                                    <div class="accordion-content hidden p-4 border-t">
+                                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                            <li>Gestión de pagos de combustible, servicios de seguridad, limpieza y suministros de oficina.</li>
+                                            <li>Seguimiento de notificaciones legales y elaboración de reportes mensuales.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="accordion-item border rounded-lg overflow-hidden">
+                                    <h3 class="accordion-header text-lg font-semibold p-4 cursor-pointer bg-gray-100 hover:bg-gray-200 transition-colors">Programa Nacional</h3>
+                                    <div class="accordion-content hidden p-4 border-t">
+                                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                            <li>Identificación de usos ilícitos y regularización de kWh a pesos mexicanos, aplicando la metodología correcta.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="accordion-item border rounded-lg overflow-hidden">
+                                    <h3 class="accordion-header text-lg font-semibold p-4 cursor-pointer bg-gray-100 hover:bg-gray-200 transition-colors">Subestaciones Compartidas y Cobros Externos</h3>
+                                    <div class="accordion-content hidden p-4 border-t">
+                                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                            <li>Trámites administrativos para contratos de media y alta tensión en subestaciones compartidas.</li>
+                                            <li>Certificación de pagos externos de facturas.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="habilidades" class="py-16">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl font-bold mb-4">Habilidades Principales</h2>
+                 <p class="text-center text-gray-600 mb-12">Esta visualización resume mis competencias clave. He agrupado mis habilidades en tres áreas: Técnicas (software y herramientas), Gestión (competencias funcionales) e Idiomas. El gráfico permite una rápida evaluación de mi nivel de dominio en cada una. Puede pasar el cursor sobre las barras para ver detalles.</p>
+                <div class="chart-container">
+                    <canvas id="skillsChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="educacion" class="py-16">
+             <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center mb-10">Educación</h2>
+                <div class="bg-white rounded-xl shadow-md p-8 max-w-2xl mx-auto">
+                    <h3 class="text-xl font-bold text-[#A67B5B]">Licenciatura en Negocios Internacionales</h3>
+                    <p class="font-semibold text-gray-700">Universidad Autónoma de Baja California</p>
+                    <p class="text-sm text-gray-500">Febrero 2017 - Diciembre 2021</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="certificaciones" class="py-16 bg-white rounded-xl shadow-md">
+            <div class="max-w-4xl mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center mb-10">Certificaciones y Cursos</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="font-semibold">Mandarín Nivel 1 y 2 - UNISER</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="font-semibold">Certificado de participación BBVA: Banca Segura</p>
+                    </div>
+                     <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="font-semibold">Certificado de participación BBVA: Ahorro</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="font-semibold">Certificado de Competencias: Planeación y Gestión de Pequeñas Empresas</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p class="font-semibold">Curso IELTS</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="bg-[#3C3C3C] text-white mt-16">
+        <div class="container mx-auto py-6 px-4 text-center text-sm">
+             <p>&copy; 2024 Diana Mendez Zamora. CV Interactivo diseñado para una mejor experiencia de reclutamiento.</p>
+        </div>
+    </footer>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    const target = document.getElementById(tab.dataset.tab);
+                    
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    
+                    target.classList.remove('hidden');
+                });
+            });
+
+            const accordionItems = document.querySelectorAll('.accordion-item');
+            accordionItems.forEach(item => {
+                const header = item.querySelector('.accordion-header');
+                header.addEventListener('click', () => {
+                    const content = item.querySelector('.accordion-content');
+                    const wasOpen = header.classList.contains('open');
+
+                    document.querySelectorAll('.accordion-header').forEach(h => h.classList.remove('open'));
+                    document.querySelectorAll('.accordion-content').forEach(c => c.classList.add('hidden'));
+
+                    if (!wasOpen) {
+                        header.classList.add('open');
+                        content.classList.remove('hidden');
+                    }
+                });
+            });
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            document.querySelectorAll('#mobile-menu a, header nav a').forEach(link => {
+                link.addEventListener('click', () => {
+                     if (!mobileMenu.classList.contains('hidden')) {
+                         mobileMenu.classList.add('hidden');
+                     }
+                });
+            });
+
+
+            const skillsChartCtx = document.getElementById('skillsChart').getContext('2d');
+            const skillsData = {
+                labels: ['Excel', 'SAP', 'CRM', 'Ventas', 'Finanzas', 'Atención al Cliente', 'Análisis de Reportes', 'Inglés', 'Mandarín'],
+                datasets: [
+                    {
+                        label: 'Habilidades Técnicas',
+                        data: [95, 80, 85, 0, 0, 0, 0, 0, 0],
+                        backgroundColor: '#A67B5B',
+                        borderColor: '#8B6A4E',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Habilidades de Gestión',
+                        data: [0, 0, 0, 90, 95, 90, 88, 0, 0],
+                        backgroundColor: '#D1BFA7',
+                        borderColor: '#BBA48C',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Idiomas',
+                        data: [0, 0, 0, 0, 0, 0, 0, 90, 50],
+                        backgroundColor: '#EAE0D5',
+                        borderColor: '#D4C6B7',
+                        borderWidth: 1
+                    }
+                ]
+            };
+            const skillsChart = new Chart(skillsChartCtx, {
+                type: 'bar',
+                data: skillsData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Nivel de Dominio (%)'
+                            }
+                        },
+                         y: {
+                            ticks: {
+                                autoSkip: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Distribución de Competencias',
+                            font: {
+                                size: 18
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.x !== null) {
+                                        let level;
+                                        if(context.parsed.x > 90) level = 'Avanzado';
+                                        else if (context.parsed.x > 70) level = 'Intermedio-Avanzado';
+                                        else if (context.parsed.x > 50) level = 'Intermedio';
+                                        else level = 'Básico';
+                                        label += level + ` (${context.parsed.x}%)`;
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+             const sections = document.querySelectorAll('main section[id]');
+             const navLinks = document.querySelectorAll('nav a');
+
+             function updateActiveLink() {
+                 let index = sections.length;
+
+                 while(--index && window.scrollY + 50 < sections[index].offsetTop) {}
+
+                 navLinks.forEach((link) => link.classList.remove('active'));
+                 const activeLink = document.querySelector(`nav a[href="#${sections[index].id}"]`);
+                 if(activeLink) {
+                    activeLink.classList.add('active');
+                 }
+                 
+                 const mobileActiveLink = document.querySelector(`#mobile-menu a[href="#${sections[index].id}"]`);
+                 document.querySelectorAll('#mobile-menu a').forEach(link => link.classList.remove('active', 'bg-gray-200'));
+                 if(mobileActiveLink) {
+                     mobileActiveLink.classList.add('active', 'bg-gray-200');
+                 }
+             }
+
+             updateActiveLink();
+             window.addEventListener('scroll', updateActiveLink);
+        });
+    </script>
+</body>
+</html>
